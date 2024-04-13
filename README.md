@@ -1,6 +1,6 @@
 # Vottun PHP SDK
 
-The [Vottun](https://vottun.com/) PHP SDK provides an easy-to-use PHP interface to interact with the [Vottun API](https://app.vottun.io/), initially designed for operations with ERC20 tokens on the Ethereum blockchain. This SDK simplifies the process of integrating Vottun API functionalities into your PHP applications, including token transfers, querying balances, and managing allowances.
+The [Vottun](https://vottun.com/) PHP SDK provides an easy-to-use PHP interface for interacting with the [Vottun API](https://app.vottun.io/). Initially implemented for ERC20 and ERC721 token operations on Ethereum compatible blockchains, this SDK simplifies the process of integrating Vottun API functionalities into your PHP applications, including contract deploys, token transfers, querying balances and managing allowances.
 
 This software is not officially affiliated with Vottun.
 
@@ -12,9 +12,11 @@ This software is not officially affiliated with Vottun.
 
 ## Features
 
-- Deploy and transfer ERC20 tokens
-- Manage ERC20 token allowances
-- Query ERC20 token balances
+- Deploy and mint ERC20 tokens
+- Deploy and mint ERC721 NFTs
+- Transfer tokens
+- Manage allowances
+- Query token balances
 - Support for big number operations
 - Easy to integrate with PHP projects
 
@@ -23,6 +25,20 @@ This software is not officially affiliated with Vottun.
 - PHP >=7.0
 - Composer
 - A Vottun App ID and API key (https://app.vottun.io/)
+
+## Folder structure
+
+```folder
+├── examples                  # Example scripts
+├── lib                       # Libraries
+│   └── Web3                  # web3p/web3.php library
+│       └── Utils.php         # The web3.php Utils class, used to manage big numbers.
+└── src                       # Source files
+    ├── VottunClient.php      # The main VottunClient class, used to interact with the Vottun API.
+    └── ERCv1                 # Vottun ERC v1 API clients
+        ├── ERC20Client.php   # The ERC20Client class, used to interact with ERC20 tokens.
+        └── ERC721Client.php  # The ERC721Client class, used to interact with ERC721 tokens.
+```
 
 ## Installation
 
@@ -46,33 +62,61 @@ use Vottun\ERCv1\ERC20Client;
 
 $vottunApiKey = 'your_api_key_here';
 $vottunApplicationVkn = 'your_application_vkn_here';
-$network = 80001; // Mumbai
-$contractAddress = 'your_contract_address_here';
-
 $vottunClient = new VottunClient($vottunApiKey, $vottunApplicationVkn);
-$erc20token = new ERC20Client($vottunClient, $network, $contractAddress);
+$network = 80001; // Mumbai
 ```
 
-## Transfer Tokens
+## Deploy ERC20
 
 ```php
+$erc20token = new ERC20Client($vottunClient, $network, null);
+
+$name = 'MyToken';
+$symbol = 'MTK';
+$decimals = 18;
+$initialSupply = strval(\Web3\Utils::toWei("1000000", 'ether')); // Initial supply in Wei
+
+$transactionHash = $erc20token->deploy($name, $symbol, $decimals, $initialSupply);
+$contractAddress = $erc20token->getContractAddress();
+
+echo "Deploy hash: {$transactionHash}";
+echo "Deploy address: {$contractAddress}";
+```
+
+## Transfer ERC20
+
+```php
+$contractAddress = 'your_contract_address_here';
+$erc20token = new ERC20Client($vottunClient, $network, $contractAddress);
+
 $recipientAddress = 'recipient_address_here';
 $amount = strval(\Web3\Utils::toWei("100.001", 'ether')); // Amount in Wei
+
 $transactionHash = $erc20token->transfer($recipientAddress, $amount);
-echo "Transaction hash: {$transactionHash}";
+$balance = $erc20token->balanceOf($recipientAddress);
+
+echo "Transfer hash: {$transactionHash}";
+echo "Recipient balance: {$balance}";
 ```
 
-## Query Token balance
+## Mint ERC721
 
 ```php
-$address = 'address_to_query_here';
-$balance = $erc20token->balanceOf($address);
-echo "Token balance: {$balance}";
+$contractAddress = 'your_contract_address_here';
+$erc721token = new ERC721Client($vottunClient, $network, $contractAddress);
+
+$recipientAddress = 'recipient_address_here';
+$ipfsUri = 'ipfs_uri_here';
+$ipfsHash = 'ipfs_hash_here';
+$royaltyPercentage = 10;
+$tokenId = 1;
+
+$transactionHash = $erc721token->mint($recipientAddress, $tokenId, $ipfsUri, $ipfsHash, $royaltyPercentage);
+echo "Mint hash: {$transactionHash}";
 ```
 
 # Pending features
 
-- ERC721 Client
 - ERC1155 Client
 - POAP Client
 - Web3 Core Client
