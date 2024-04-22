@@ -63,7 +63,7 @@ use Vottun\ERCv1\ERC20Client;
 $vottunApiKey = 'your_api_key_here';
 $vottunApplicationVkn = 'your_application_vkn_here';
 $vottunClient = new VottunClient($vottunApiKey, $vottunApplicationVkn);
-$network = 80001; // Mumbai
+$network = 80002; // Amoy testnet
 ```
 
 ## Deploy ERC20

@@ -41,7 +41,7 @@ class ERC721Client
 	* @param string $alias The alias of the ERC721 collection (optional)
 	* @param int $gasLimit The gas limit for the transaction (optional)
 	* @return string The transaction hash of the deployment operation.
-	* @example deploy('MyToken', 'MTK', 'MyToken', 1000000, 80001)
+	* @example deploy('MyToken', 'MTK', 'MyToken', 1000000, 80002)
 	*/
 	public function deploy(string $name, string $symbol, string $alias = null, int $gasLimit = null): string
 	{

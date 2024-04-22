@@ -17,7 +17,7 @@ use Vottun\ERCv1\ERC20Client;
 $vottunApiKey = ''; // Replace with your Vottun API key
 $vottunApplicationVkn = ''; // Replace with your Vottun application VKN
 
-$network = 80001; // Mumbai testnet
+$network = 80002; // Amoy testnet
 $destAddress = ''; // Destination address
 
 $vottunClient = new VottunClient($vottunApiKey, $vottunApplicationVkn);
