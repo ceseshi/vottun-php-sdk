@@ -2,8 +2,6 @@
 
 The [Vottun](https://vottun.com/) PHP SDK provides an easy-to-use PHP interface for interacting with the [Vottun API](https://app.vottun.io/). Initially implemented for ERC20 and ERC721 token operations on Ethereum compatible blockchains, this SDK simplifies the process of integrating Vottun API functionalities into your PHP applications, including contract deploys, token transfers, querying balances and managing allowances.
 
-This software is not officially affiliated with Vottun.
-
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL_v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
 ## Author
