@@ -29,7 +29,7 @@ class ERC721Client
 	public function __construct(VottunClient $client, int $network, string $contractAddress = null)
 	{
 		$this->client = $client;
-		$this->network = intval($network);
+		$this->network = $network;
 		$this->contractAddress = $contractAddress;
 	}
 
@@ -48,14 +48,12 @@ class ERC721Client
 		$uri = 'erc/v1/erc721/deploy';
 
 		if (!$this->network) {
-			throw new \Exception("Network ID is required to deploy the ERC721 contract.");
+			throw new \Exception("Network ID is required to deploy the ERC721 contract");
 		}
 
 		if (!$name || !$symbol) {
-			throw new \Exception("Name and symbol are required to deploy the ERC721 contract.");
+			throw new \Exception("Name and symbol are required to deploy the ERC721 contract");
 		}
-
-		$gasLimit = intval($gasLimit);
 
 		# Prepare the data to be sent to the API
 		$data = json_encode(array_filter([
@@ -67,7 +65,7 @@ class ERC721Client
 		]));
 
 		if ($data === false) {
-			throw new \Exception("Error encoding data.");
+			throw new \Exception("Error encoding data");
 		}
 
 		# Send the request to the API
@@ -88,7 +86,7 @@ class ERC721Client
 	*/
 	private function validateContract(): bool
 	{
-		return !empty($this->contractAddress) && intval($this->network);
+		return !empty($this->contractAddress) && $this->network;
 	}
 
 	/**
@@ -107,15 +105,12 @@ class ERC721Client
 		$uri = 'erc/v1/erc721/mint';
 
 		if (!$this->validateContract()) {
-			throw new \Exception("Contract address and network are required.");
+			throw new \Exception("Contract address and network are required");
 		}
 
 		if (!$recipientAddress || !$tokenId || !$ipfsUri || !$ipfsHash) {
-			throw new \Exception("Recipient address, token ID, IPFS URI, and IPFS hash are required.");
+			throw new \Exception("Recipient address, token ID, IPFS URI, and IPFS hash are required");
 		}
-
-		$royaltyPercentage = intval($royaltyPercentage);
-		$gasLimit = intval($gasLimit);
 
 		# Prepare the data to be sent to the API
 		$data = json_encode(array_filter([
@@ -130,7 +125,7 @@ class ERC721Client
 		]));
 
 		if ($data === false) {
-			throw new \Exception("Error encoding data.");
+			throw new \Exception("Error encoding data");
 		}
 
 		# Send the request to the API
@@ -152,11 +147,11 @@ class ERC721Client
 		$uri = 'erc/v1/erc721/transfer';
 
 		if (!$this->validateContract()) {
-			throw new \Exception("Contract address and network are required.");
+			throw new \Exception("Contract address and network are required");
 		}
 
 		if (!$id || !$from || !$to) {
-			throw new \Exception("Token ID, sender, and recipient are required.");
+			throw new \Exception("Token ID, sender, and recipient are required");
 		}
 
 		# Prepare the data to be sent to the API
@@ -169,7 +164,7 @@ class ERC721Client
 		]);
 
 		if ($data === false) {
-			throw new \Exception("Error encoding data.");
+			throw new \Exception("Error encoding data");
 		}
 
 		# Send the request to the API
@@ -189,11 +184,11 @@ class ERC721Client
 		$uri = 'erc/v1/erc721/balanceOf';
 
 		if (!$this->validateContract()) {
-			throw new \Exception("Contract address and network are required.");
+			throw new \Exception("Contract address and network are required");
 		}
 
 		if (!$address) {
-			throw new \Exception("Address is required.");
+			throw new \Exception("Address is required");
 		}
 
 		# Prepare the data to be sent to the API
@@ -204,7 +199,7 @@ class ERC721Client
 		]);
 
 		if ($data === false) {
-			throw new \Exception("Error encoding data.");
+			throw new \Exception("Error encoding data");
 		}
 
 		# Send the request to the API
@@ -223,7 +218,7 @@ class ERC721Client
 		$uri = 'erc/v1/erc721/tokenUri';
 
 		if (!$this->validateContract()) {
-			throw new \Exception("Contract address and network are required.");
+			throw new \Exception("Contract address and network are required");
 		}
 
 		# Prepare the data to be sent to the API
@@ -233,7 +228,7 @@ class ERC721Client
 		]);
 
 		if ($data === false) {
-			throw new \Exception("Error encoding data.");
+			throw new \Exception("Error encoding data");
 		}
 
 		# Send the request to the API
@@ -253,11 +248,11 @@ class ERC721Client
 		$uri = 'erc/v1/erc721/ownerOf';
 
 		if (!$this->validateContract()) {
-			throw new \Exception("Contract address and network are required.");
+			throw new \Exception("Contract address and network are required");
 		}
 
 		if (!$id) {
-			throw new \Exception("Token ID is required.");
+			throw new \Exception("Token ID is required");
 		}
 
 		# Prepare the data to be sent to the API
@@ -268,7 +263,7 @@ class ERC721Client
 		]);
 
 		if ($data === false) {
-			throw new \Exception("Error encoding data.");
+			throw new \Exception("Error encoding data");
 		}
 
 		# Send the request to the API
@@ -302,7 +297,7 @@ class ERC721Client
 	* @dev Sets the contract address of the ERC721 contract to be managed by the ERC721Client instance.
 	* @param string $contractAddress The contract address of the ERC721 contract.
 	*/
-	public function setContractAddress($contractAddress): void
+	public function setContractAddress(string $contractAddress): void
 	{
 		$this->contractAddress = $contractAddress;
 	}
@@ -312,8 +307,8 @@ class ERC721Client
 	* @dev Sets the network ID of the blockchain network where the ERC721 contract is deployed.
 	* @param int $network The network ID of the blockchain network.
 	*/
-	public function setNetwork($network): void
+	public function setNetwork(int $network): void
 	{
-		$this->network = intval($network);
+		$this->network = $network;
 	}
 }

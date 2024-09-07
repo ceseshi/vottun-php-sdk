@@ -29,7 +29,7 @@ class ERC20Client
 	public function __construct(VottunClient $client, int $network, string $contractAddress = null)
 	{
 		$this->client = $client;
-		$this->network = intval($network);
+		$this->network = $network;
 		$this->contractAddress = $contractAddress;
 	}
 
@@ -49,14 +49,12 @@ class ERC20Client
 		$uri = 'erc/v1/erc20/deploy';
 
 		if (!$this->network) {
-			throw new \Exception("Network ID is required to deploy ERC20 token.");
+			throw new \Exception("Network ID is required to deploy ERC20 token");
 		}
 
-		if (!$name || !$symbol || !$initialSupply) {
-			throw new \Exception("Name, symbol, and initial supply are required to deploy ERC20 token.");
+		if (!$name || !$symbol || !$alias || !$initialSupply) {
+			throw new \Exception("Name, symbol, alias, and initial supply are required to deploy ERC20 token");
 		}
-
-		$gasLimit = intval($gasLimit);
 
 		# Prepare the data to be sent to the API
 		$data = json_encode(array_filter([
@@ -69,7 +67,7 @@ class ERC20Client
 		]));
 
 		if ($data === false) {
-			throw new \Exception("Error encoding data.");
+			throw new \Exception("Error encoding data");
 		}
 
 		# Remove quotes from big numbers
@@ -93,7 +91,7 @@ class ERC20Client
 	*/
 	private function validateContract(): bool
 	{
-		return !empty($this->contractAddress) && intval($this->network);
+		return !empty($this->contractAddress) && $this->network;
 	}
 
 	/**
@@ -109,14 +107,12 @@ class ERC20Client
 		$uri = 'erc/v1/erc20/transfer';
 
 		if (!$this->validateContract()) {
-			throw new \Exception("Contract address and network are required.");
+			throw new \Exception("Contract address and network are required");
 		}
 
 		if (!$recipient || !$amount) {
-			throw new \Exception("Recipient address and amount are required.");
+			throw new \Exception("Recipient address and amount are required");
 		}
-
-		$gasLimit = intval($gasLimit);
 
 		# Prepare the data to be sent to the API
 		$data = json_encode(array_filter([
@@ -128,7 +124,7 @@ class ERC20Client
 		]));
 
 		if ($data === false) {
-			throw new \Exception("Error encoding data.");
+			throw new \Exception("Error encoding data");
 		}
 
 		# Remove quotes from big numbers
@@ -154,14 +150,12 @@ class ERC20Client
 		$uri = 'erc/v1/erc20/transferFrom';
 
 		if (!$this->validateContract()) {
-			throw new \Exception("Contract address and network are required.");
+			throw new \Exception("Contract address and network are required");
 		}
 
 		if (!$sender || !$recipient || !$amount) {
-			throw new \Exception("Sender, recipient, and amount are required to transfer ERC20 token.");
+			throw new \Exception("Sender, recipient, and amount are required to transfer ERC20 token");
 		}
-
-		$gasLimit = intval($gasLimit);
 
 		# Prepare the data to be sent to the API
 		$data = json_encode(array_filter([
@@ -174,7 +168,7 @@ class ERC20Client
 		]));
 
 		if ($data === false) {
-			throw new \Exception("Error encoding data.");
+			throw new \Exception("Error encoding data");
 		}
 
 		# Remove quotes from big numbers
@@ -187,7 +181,7 @@ class ERC20Client
 	}
 
 	/**
-	* @notice Approve a spender to spend a specific amount of tokens on behalf of the caller.
+	* @notice Increase allowance of a spender for a specific amount of tokens.
 	* @dev This function calls the Vottun API to execute an `approve` operation on behalf of the caller. This operation allows the specified spender to spend the specified amount of tokens on behalf of the caller. The operation requires the caller to be authenticated with valid API credentials.
 	* @param string $spender The address of the spender to approve.
 	* @param string $amount The amount of tokens to approve for spending, in wei (cannot use int)
@@ -199,14 +193,12 @@ class ERC20Client
 		$uri = 'erc/v1/erc20/increaseAllowance';
 
 		if (!$this->validateContract()) {
-			throw new \Exception("Contract address and network are required.");
+			throw new \Exception("Contract address and network are required");
 		}
 
 		if (!$spender || !$addedValue) {
-			throw new \Exception("Spender and addedValue are required to increase allowance.");
+			throw new \Exception("Spender and addedValue are required to increase allowance");
 		}
-
-		$gasLimit = intval($gasLimit);
 
 		# Prepare the data to be sent to the API
 		$data = json_encode(array_filter([
@@ -218,7 +210,7 @@ class ERC20Client
 		]));
 
 		if ($data === false) {
-			throw new \Exception("Error encoding data.");
+			throw new \Exception("Error encoding data");
 		}
 
 		# Remove quotes from big numbers
@@ -230,7 +222,7 @@ class ERC20Client
 	}
 
 	/**
-	* @notice Decrease the allowance of a spender to spend a specific amount of tokens on behalf of the caller.
+	* @notice Decrease allowance of a spender for a specific amount of tokens.
 	* @dev This function calls the Vottun API to execute a `decreaseAllowance` operation on behalf of the caller. This operation decreases the allowance of the specified spender to spend the specified amount of tokens on behalf of the caller. The operation requires the caller to be authenticated with valid API credentials.
 	* @param string $spender The address of the spender to decrease the allowance for.
 	* @param string $substractedValue The amount of tokens to decrease the allowance by, in wei (cannot use int)
@@ -242,14 +234,12 @@ class ERC20Client
 		$uri = 'erc/v1/erc20/decreaseAllowance';
 
 		if (!$this->validateContract()) {
-			throw new \Exception("Contract address and network are required.");
+			throw new \Exception("Contract address and network are required");
 		}
 
 		if (!$spender || !$substractedValue) {
-			throw new \Exception("Spender and substractedValue are required to decrease allowance.");
+			throw new \Exception("Spender and substractedValue are required to decrease allowance");
 		}
-
-		$gasLimit = intval($gasLimit);
 
 		# Prepare the data to be sent to the API
 		$data = json_encode(array_filter([
@@ -261,7 +251,7 @@ class ERC20Client
 		]));
 
 		if ($data === false) {
-			throw new \Exception("Error encoding data.");
+			throw new \Exception("Error encoding data");
 		}
 
 		# Remove quotes from big numbers
@@ -286,7 +276,7 @@ class ERC20Client
 		$uri = 'erc/v1/erc20/allowance';
 
 		if (!$this->validateContract()) {
-			throw new \Exception("Contract address and network are required.");
+			throw new \Exception("Contract address and network are required");
 		}
 
 		# Prepare the data to be sent to the API
@@ -314,7 +304,7 @@ class ERC20Client
 		$uri = 'erc/v1/erc20/name';
 
 		if (!$this->validateContract()) {
-			throw new \Exception("Contract address and network are required.");
+			throw new \Exception("Contract address and network are required");
 		}
 
 		# Prepare the data to be sent to the API
@@ -340,7 +330,7 @@ class ERC20Client
 		$uri = 'erc/v1/erc20/symbol';
 
 		if (!$this->validateContract()) {
-			throw new \Exception("Contract address and network are required.");
+			throw new \Exception("Contract address and network are required");
 		}
 
 		# Prepare the data to be sent to the API
@@ -366,7 +356,7 @@ class ERC20Client
 		$uri = 'erc/v1/erc20/totalSupply';
 
 		if (!$this->validateContract()) {
-			throw new \Exception("Contract address and network are required.");
+			throw new \Exception("Contract address and network are required");
 		}
 
 		# Prepare the data to be sent to the API
@@ -392,7 +382,7 @@ class ERC20Client
 		$uri = 'erc/v1/erc20/decimals';
 
 		if (!$this->validateContract()) {
-			throw new \Exception("Contract address and network are required.");
+			throw new \Exception("Contract address and network are required");
 		}
 
 		# Prepare the data to be sent to the API
@@ -419,7 +409,7 @@ class ERC20Client
 		$uri = 'erc/v1/erc20/balanceOf';
 
 		if (!$this->validateContract()) {
-			throw new \Exception("Contract address and network are required.");
+			throw new \Exception("Contract address and network are required");
 		}
 
 		# Prepare the data to be sent to the API
@@ -459,7 +449,7 @@ class ERC20Client
 	* @dev Sets the contract address of the ERC-20 token to be managed by the ERC20Client instance.
 	* @param string $contractAddress The contract address of the ERC-20 token.
 	*/
-	public function setContractAddress($contractAddress): void
+	public function setContractAddress(string $contractAddress): void
 	{
 		$this->contractAddress = $contractAddress;
 	}
@@ -469,8 +459,8 @@ class ERC20Client
 	* @dev Sets the network ID of the blockchain network where the ERC-20 token is deployed.
 	* @param int $network The network ID of the blockchain network.
 	*/
-	public function setNetwork($network): void
+	public function setNetwork(int $network): void
 	{
-		$this->network = intval($network);
+		$this->network = $network;
 	}
 }
