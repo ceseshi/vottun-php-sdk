@@ -15,9 +15,9 @@ use Vottun\VottunClient;
 
 class ERC20Client
 {
-	private $client;
-	private $contractAddress;
-	private $network;
+	private VottunClient $client;
+	private string $contractAddress;
+	private int $network;
 
 	/**
 	* @notice Creates an instance of the ERC20Client to interact with the ERC20 API.
@@ -39,7 +39,7 @@ class ERC20Client
 	* @param string $name The name of the ERC20 token.
 	* @param string $symbol The symbol of the ERC20 token.
 	* @param string $alias The alias of the ERC20 token.
-	* @param string $initialSupply The initial supply of the ERC20 token, in wei.
+	* @param string $initialSupply The initial supply of the ERC20 token, in wei (cannot use int)
 	* @param int $gasLimit The gas limit for the transaction (optional)
 	* @return string The transaction hash of the deployment operation.
 	* @example deploy('MyToken', 'MTK', 'MyToken', 1000000, 80002)
@@ -59,14 +59,21 @@ class ERC20Client
 		$gasLimit = intval($gasLimit);
 
 		# Prepare the data to be sent to the API
-		$data = "{
-			\"network\": {$this->network},
-			\"name\": \"{$name}\",
-			\"symbol\": \"{$symbol}\",
-			\"alias\": \"{$alias}\",
-			\"initialSupply\": {$initialSupply},
-			\"gasLimit\": {$gasLimit}
-		}";
+		$data = json_encode(array_filter([
+			"network" => $this->network,
+			"name" => $name,
+			"symbol" => $symbol,
+			"alias" => $alias,
+			"initialSupply" => $initialSupply,
+			"gasLimit" => $gasLimit
+		]));
+
+		if ($data === false) {
+			throw new \Exception("Error encoding data.");
+		}
+
+		# Remove quotes from big numbers
+		$data = preg_replace("/\"initialSupply\":\"(\d+)\"/", "\"initialSupply\":$1", $data);
 
 		# Send the request to the API
 		$response = $this->client->post($uri, $data);
@@ -93,7 +100,7 @@ class ERC20Client
 	* @notice Transfers ERC20 tokens from the caller's account to another address.
 	* @dev This function calls the Vottun API to execute a token transfer operation on behalf of the caller. The caller's account must have a sufficient balance of tokens to cover the transfer amount. This operation requires the caller to be authenticated with valid API credentials.
 	* @param string $recipient The address of the recipient to receive the tokens.
-	* @param string $amount The amount of tokens to transfer, in wei.
+	* @param string $amount The amount of tokens to transfer, in wei (cannot use int)
 	* @param int $gasLimit The gas limit for the transaction (optional))
 	* @return string The transaction hash of the deployment operation.
 	*/
@@ -112,17 +119,20 @@ class ERC20Client
 		$gasLimit = intval($gasLimit);
 
 		# Prepare the data to be sent to the API
-		$data = "{
-			\"contractAddress\": \"{$this->contractAddress}\",
-			\"network\": {$this->network},
-			\"recipient\": \"{$recipient}\",
-			\"amount\": {$amount},
-			\"gasLimit\": {$gasLimit}
-		}";
+		$data = json_encode(array_filter([
+			"contractAddress" => $this->contractAddress,
+			"network" => $this->network,
+			"recipient" => $recipient,
+			"amount" => $amount,
+			"gasLimit" => $gasLimit
+		]));
 
-		if (!json_decode($data)) {
-			throw new \Exception("Error in data validation.");
+		if ($data === false) {
+			throw new \Exception("Error encoding data.");
 		}
+
+		# Remove quotes from big numbers
+		$data = preg_replace("/\"amount\":\"(\d+)\"/", "\"amount\":$1", $data);
 
 		# Send the request to the API
 		$response = $this->client->post($uri, $data);
@@ -135,7 +145,7 @@ class ERC20Client
 	* @dev This function calls the Vottun API to execute a `transferFrom` operation on behalf of the caller. This operation allows the caller to transfer tokens from the specified sender to the specified recipient. The operation requires the caller to be authenticated with valid API credentials.
 	* @param string $sender The address of the sender that will transfer the tokens.
 	* @param string $recipient The address of the recipient that will receive the tokens.
-	* @param string $amount The amount of tokens to transfer, in wei.
+	* @param string $amount The amount of tokens to transfer, in wei (cannot use int)
 	* @param int $gasLimit The gas limit for the transaction (optional).
 	* @return string The transaction hash of the deployment operation.
 	*/
@@ -154,14 +164,21 @@ class ERC20Client
 		$gasLimit = intval($gasLimit);
 
 		# Prepare the data to be sent to the API
-		$data = "{
-			\"contractAddress\": \"{$this->contractAddress}\",
-			\"network\": {$this->network},
-			\"sender\": \"{$sender}\",
-			\"recipient\": \"{$recipient}\",
-			\"amount\": {$amount},
-			\"gasLimit\": {$gasLimit}
-		}";
+		$data = json_encode(array_filter([
+			"contractAddress" => $this->contractAddress,
+			"network" => $this->network,
+			"sender" => $sender,
+			"recipient" => $recipient,
+			"amount" => $amount,
+			"gasLimit" => $gasLimit
+		]));
+
+		if ($data === false) {
+			throw new \Exception("Error encoding data.");
+		}
+
+		# Remove quotes from big numbers
+		$data = preg_replace("/\"amount\":\"(\d+)\"/", "\"amount\":$1", $data);
 
 		# Send the request to the API
 		$response = $this->client->post($uri, $data);
@@ -173,7 +190,7 @@ class ERC20Client
 	* @notice Approve a spender to spend a specific amount of tokens on behalf of the caller.
 	* @dev This function calls the Vottun API to execute an `approve` operation on behalf of the caller. This operation allows the specified spender to spend the specified amount of tokens on behalf of the caller. The operation requires the caller to be authenticated with valid API credentials.
 	* @param string $spender The address of the spender to approve.
-	* @param string $amount The amount of tokens to approve for spending, in wei.
+	* @param string $amount The amount of tokens to approve for spending, in wei (cannot use int)
 	* @param int $gasLimit The gas limit for the transaction (optional).
 	* @return string The transaction hash of the deployment operation.
 	*/
@@ -192,13 +209,20 @@ class ERC20Client
 		$gasLimit = intval($gasLimit);
 
 		# Prepare the data to be sent to the API
-		$data = "{
-			\"contractAddress\": \"{$this->contractAddress}\",
-			\"network\": {$this->network},
-			\"spender\": \"{$spender}\",
-			\"addedValue\": {$addedValue},
-			\"gasLimit\": {$gasLimit}
-		}";
+		$data = json_encode(array_filter([
+			"contractAddress" => $this->contractAddress,
+			"network" => $this->network,
+			"spender" => $spender,
+			"addedValue" => $addedValue,
+			"gasLimit" => $gasLimit
+		]));
+
+		if ($data === false) {
+			throw new \Exception("Error encoding data.");
+		}
+
+		# Remove quotes from big numbers
+		$data = preg_replace("/\"addedValue\":\"(\d+)\"/", "\"addedValue\":$1", $data);
 
 		$response = $this->client->post($uri, $data);
 
@@ -209,7 +233,7 @@ class ERC20Client
 	* @notice Decrease the allowance of a spender to spend a specific amount of tokens on behalf of the caller.
 	* @dev This function calls the Vottun API to execute a `decreaseAllowance` operation on behalf of the caller. This operation decreases the allowance of the specified spender to spend the specified amount of tokens on behalf of the caller. The operation requires the caller to be authenticated with valid API credentials.
 	* @param string $spender The address of the spender to decrease the allowance for.
-	* @param string $substractedValue The amount of tokens to decrease the allowance by, in wei.
+	* @param string $substractedValue The amount of tokens to decrease the allowance by, in wei (cannot use int)
 	* @param int $gasLimit The gas limit for the transaction (optional).
 	* @return string The transaction hash of the deployment operation.
 	*/
@@ -228,13 +252,20 @@ class ERC20Client
 		$gasLimit = intval($gasLimit);
 
 		# Prepare the data to be sent to the API
-		$data = "{
-			\"contractAddress\": \"{$this->contractAddress}\",
-			\"network\": {$this->network},
-			\"spender\": \"{$spender}\",
-			\"substractedValue\": {$substractedValue},
-			\"gasLimit\": {$gasLimit}
-		}";
+		$data = json_encode(array_filter([
+			"contractAddress" => $this->contractAddress,
+			"network" => $this->network,
+			"spender" => $spender,
+			"substractedValue" => $substractedValue,
+			"gasLimit" => $gasLimit
+		]));
+
+		if ($data === false) {
+			throw new \Exception("Error encoding data.");
+		}
+
+		# Remove quotes from big numbers
+		$data = preg_replace("/\"substractedValue\":\"(\d+)\"/", "\"substractedValue\":$1", $data);
 
 		$response = $this->client->post($uri, $data);
 

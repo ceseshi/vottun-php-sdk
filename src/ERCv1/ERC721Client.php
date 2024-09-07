@@ -15,9 +15,9 @@ use Vottun\VottunClient;
 
 class ERC721Client
 {
-	private $client;
-	private $contractAddress;
-	private $network;
+	private VottunClient $client;
+	private string $contractAddress;
+	private int $network;
 
 	/**
 	* @notice Creates an instance of the ERC721Client to interact with the ERC721 API.
@@ -58,13 +58,17 @@ class ERC721Client
 		$gasLimit = intval($gasLimit);
 
 		# Prepare the data to be sent to the API
-		$data = "{
-			\"network\": {$this->network},
-			\"name\": \"{$name}\",
-			\"symbol\": \"{$symbol}\",
-			\"alias\": \"{$alias}\",
-			\"gasLimit\": {$gasLimit}
-		}";
+		$data = json_encode(array_filter([
+			"network" => $this->network,
+			"name" => $name,
+			"symbol" => $symbol,
+			"alias" => $alias,
+			"gasLimit" => $gasLimit
+		]));
+
+		if ($data === false) {
+			throw new \Exception("Error encoding data.");
+		}
 
 		# Send the request to the API
 		$response = $this->client->post($uri, $data);
@@ -114,19 +118,19 @@ class ERC721Client
 		$gasLimit = intval($gasLimit);
 
 		# Prepare the data to be sent to the API
-		$data = "{
-			\"contractAddress\": \"{$this->contractAddress}\",
-			\"network\": {$this->network},
-			\"recipientAddress\": \"{$recipientAddress}\",
-			\"tokenId\": {$tokenId},
-			\"ipfsUri\": \"{$ipfsUri}\",
-			\"ipfsHash\": \"{$ipfsHash}\",
-			\"royaltyPercentage\": {$royaltyPercentage},
-			\"gasLimit\": {$gasLimit}
-		}";
+		$data = json_encode(array_filter([
+			"contractAddress" => $this->contractAddress,
+			"network" => $this->network,
+			"recipientAddress" => $recipientAddress,
+			"tokenId" => $tokenId,
+			"ipfsUri" => $ipfsUri,
+			"ipfsHash" => $ipfsHash,
+			"royaltyPercentage" => $royaltyPercentage,
+			"gasLimit" => $gasLimit
+		]));
 
-		if (!json_decode($data)) {
-			throw new \Exception("Error in data validation.");
+		if ($data === false) {
+			throw new \Exception("Error encoding data.");
 		}
 
 		# Send the request to the API
@@ -156,16 +160,16 @@ class ERC721Client
 		}
 
 		# Prepare the data to be sent to the API
-		$data = "{
-			\"contractAddress\": \"{$this->contractAddress}\",
-			\"network\": {$this->network},
-			\"id\": {$id},
-			\"from\": \"{$from}\",
-			\"to\": \"{$to}\"
-		}";
+		$data = json_encode([
+			"contractAddress" => $this->contractAddress,
+			"network" => $this->network,
+			"id" => $id,
+			"from" => $from,
+			"to" => $to
+		]);
 
-		if (!json_decode($data)) {
-			throw new \Exception("Error in data validation.");
+		if ($data === false) {
+			throw new \Exception("Error encoding data.");
 		}
 
 		# Send the request to the API
@@ -193,14 +197,14 @@ class ERC721Client
 		}
 
 		# Prepare the data to be sent to the API
-		$data = "{
-			\"contractAddress\": \"{$this->contractAddress}\",
-			\"network\": {$this->network},
-			\"address\": \"{$address}\"
-		}";
+		$data = json_encode([
+			"contractAddress" => $this->contractAddress,
+			"network" => $this->network,
+			"address" => $address
+		]);
 
-		if (!json_decode($data)) {
-			throw new \Exception("Error in data validation.");
+		if ($data === false) {
+			throw new \Exception("Error encoding data.");
 		}
 
 		# Send the request to the API
@@ -223,13 +227,13 @@ class ERC721Client
 		}
 
 		# Prepare the data to be sent to the API
-		$data = "{
-			\"contractAddress\": \"{$this->contractAddress}\",
-			\"network\": {$this->network}
-		}";
+		$data = json_encode([
+			"contractAddress" => $this->contractAddress,
+			"network" => $this->network
+		]);
 
-		if (!json_decode($data)) {
-			throw new \Exception("Error in data validation.");
+		if ($data === false) {
+			throw new \Exception("Error encoding data.");
 		}
 
 		# Send the request to the API
@@ -257,14 +261,14 @@ class ERC721Client
 		}
 
 		# Prepare the data to be sent to the API
-		$data = "{
-			\"contractAddress\": \"{$this->contractAddress}\",
-			\"network\": {$this->network},
-			\"id\": {$id}
-		}";
+		$data = json_encode([
+			"contractAddress" => $this->contractAddress,
+			"network" => $this->network,
+			"id" => $id
+		]);
 
-		if (!json_decode($data)) {
-			throw new \Exception("Error in data validation.");
+		if ($data === false) {
+			throw new \Exception("Error encoding data.");
 		}
 
 		# Send the request to the API
