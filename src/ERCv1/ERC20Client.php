@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of the Vottun PHP SDK package.
  *
@@ -11,28 +10,8 @@
 
 namespace Vottun\ERCv1;
 
-use Vottun\VottunClient;
-
-class ERC20Client
+class ERC20Client extends BaseClient
 {
-	private VottunClient $client;
-	private string $contractAddress;
-	private int $network;
-
-	/**
-	* @notice Creates an instance of the ERC20Client to interact with the ERC20 API.
-	* @dev This constructor initializes the ERC20Client with a VottunClient. The VottunClient must be configured with the necessary API credentials and settings for interacting with the Vottun API. The ERC20Client provides methods to deploy ERC20 tokens, transfer tokens, and more, utilizing the Vottun API.
-	* @param VottunClient $client The VottunClient instance configured with API credentials and settings.
-	* @param int $network The network ID where the ERC20 token is deployed.
-	* @param string $contractAddress The contract address of the ERC20 token (optional).
-	*/
-	public function __construct(VottunClient $client, int $network, string $contractAddress = null)
-	{
-		$this->client = $client;
-		$this->network = $network;
-		$this->contractAddress = $contractAddress;
-	}
-
 	/**
 	* @notice Deploy a new ERC20 token contract to the blockchain.
 	* @dev Calls the Vottun API to deploy a new ERC20 token contract with the specified initial parameters. The deployment operation requires the caller to be authenticated with valid API credentials.
@@ -82,16 +61,6 @@ class ERC20Client
 		}
 
 		return $response['txHash'];
-	}
-
-	/**
-	* @notice Validates the contract address and network ID.
-	* @dev This function checks if the contract address and network ID are set in the ERC20Client instance.
-	* @return bool True if the contract address and network ID are set, false otherwise.
-	*/
-	private function validateContract(): bool
-	{
-		return !empty($this->contractAddress) && $this->network;
 	}
 
 	/**
@@ -229,7 +198,7 @@ class ERC20Client
 	* @param int $gasLimit The gas limit for the transaction (optional).
 	* @return string The transaction hash of the deployment operation.
 	*/
-	public function decreaseAllowance(string $spender, string $substractedValue, string $gasLimit = null): string
+	public function decreaseAllowance(string $spender, string $substractedValue, int $gasLimit = null): string
 	{
 		$uri = 'erc/v1/erc20/decreaseAllowance';
 
@@ -422,45 +391,5 @@ class ERC20Client
 		$response = $this->client->get($uri, $params);
 
 		return $response['balance'];
-	}
-
-	/**
-	* @notice Retrieve the contract address of the ERC-20 token.
-	* @dev Returns the contract address of the ERC-20 token that is currently being managed by the ERC20Client instance.
-	* @return string The contract address of the ERC-20 token.
-	*/
-	public function getContractAddress(): string
-	{
-		return $this->contractAddress;
-	}
-
-	/**
-	* @notice Retrieve the network ID of the ERC-20 token.
-	* @dev Returns the network ID of the blockchain network where the ERC-20 token is deployed.
-	* @return int The network ID of the blockchain network.
-	*/
-	public function getNetwork(): int
-	{
-		return $this->network;
-	}
-
-	/**
-	* @notice Set the contract address of the ERC-20 token.
-	* @dev Sets the contract address of the ERC-20 token to be managed by the ERC20Client instance.
-	* @param string $contractAddress The contract address of the ERC-20 token.
-	*/
-	public function setContractAddress(string $contractAddress): void
-	{
-		$this->contractAddress = $contractAddress;
-	}
-
-	/**
-	* @notice Set the network ID of the ERC-20 token.
-	* @dev Sets the network ID of the blockchain network where the ERC-20 token is deployed.
-	* @param int $network The network ID of the blockchain network.
-	*/
-	public function setNetwork(int $network): void
-	{
-		$this->network = $network;
 	}
 }

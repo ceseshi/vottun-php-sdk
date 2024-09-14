@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of the Vottun PHP SDK package.
  *
@@ -11,28 +10,8 @@
 
 namespace Vottun\ERCv1;
 
-use Vottun\VottunClient;
-
-class ERC721Client
+class ERC721Client extends BaseClient
 {
-	private VottunClient $client;
-	private string $contractAddress;
-	private int $network;
-
-	/**
-	* @notice Creates an instance of the ERC721Client to interact with the ERC721 API.
-	* @dev This constructor initializes the ERC721Client with a VottunClient. The VottunClient must be configured with the necessary API credentials and settings for interacting with the Vottun API. The ERC721Client provides methods to deploy ERC721 contracts, transfer NFTs, and more, utilizing the Vottun API.
-	* @param VottunClient $client The VottunClient instance configured with API credentials and settings.
-	* @param int $network The network ID where the ERC721 contract is deployed.
-	* @param string $contractAddress The contract address of the ERC721 contract (optional).
-	*/
-	public function __construct(VottunClient $client, int $network, string $contractAddress = null)
-	{
-		$this->client = $client;
-		$this->network = $network;
-		$this->contractAddress = $contractAddress;
-	}
-
 	/**
 	* @notice Deploy a new ERC721 contract to the blockchain.
 	* @dev Calls the Vottun API to deploy a new ERC721 contract with the specified initial parameters. The deployment operation requires the caller to be authenticated with valid API credentials.
@@ -77,16 +56,6 @@ class ERC721Client
 		}
 
 		return $response['txHash'];
-	}
-
-	/**
-	* @notice Validates the contract address and network ID.
-	* @dev This function checks if the contract address and network ID are set in the ERC721Client instance.
-	* @return bool True if the contract address and network ID are set, false otherwise.
-	*/
-	private function validateContract(): bool
-	{
-		return !empty($this->contractAddress) && $this->network;
 	}
 
 	/**
@@ -270,45 +239,5 @@ class ERC721Client
 		$response = $this->client->post($uri, $data);
 
 		return $response['owner'];
-	}
-
-	/**
-	* @notice Retrieve the contract address of the ERC721 contract.
-	* @dev Returns the contract address of the ERC721 contract that is currently being managed by the ERC721Client instance.
-	* @return string The contract address of the ERC721 contract.
-	*/
-	public function getContractAddress(): string
-	{
-		return $this->contractAddress;
-	}
-
-	/**
-	* @notice Retrieve the network ID of the ERC721 contract.
-	* @dev Returns the network ID of the blockchain network where the ERC721 contract is deployed.
-	* @return int The network ID of the blockchain network.
-	*/
-	public function getNetwork(): int
-	{
-		return $this->network;
-	}
-
-	/**
-	* @notice Set the contract address of the ERC721 contract.
-	* @dev Sets the contract address of the ERC721 contract to be managed by the ERC721Client instance.
-	* @param string $contractAddress The contract address of the ERC721 contract.
-	*/
-	public function setContractAddress(string $contractAddress): void
-	{
-		$this->contractAddress = $contractAddress;
-	}
-
-	/**
-	* @notice Set the network ID of the ERC721 contract.
-	* @dev Sets the network ID of the blockchain network where the ERC721 contract is deployed.
-	* @param int $network The network ID of the blockchain network.
-	*/
-	public function setNetwork(int $network): void
-	{
-		$this->network = $network;
 	}
 }

@@ -12,6 +12,8 @@ The [Vottun](https://vottun.com/) PHP SDK provides an easy-to-use PHP interface 
 
 - Deploy and mint ERC20 tokens
 - Deploy and mint ERC721 NFTs
+- Deploy and mint ERC1155 NFTs
+- Deploy and manage POAP tokens
 - Transfer tokens
 - Manage allowances
 - Query token balances
@@ -34,8 +36,11 @@ The [Vottun](https://vottun.com/) PHP SDK provides an easy-to-use PHP interface 
 └── src                       # Source files
     ├── VottunClient.php      # The main VottunClient class, used to interact with the Vottun API.
     └── ERCv1                 # Vottun ERC v1 API clients
+        ├── BaseClient.php    # The BaseClient class, used to interact with the Vottun API.
         ├── ERC20Client.php   # The ERC20Client class, used to interact with ERC20 tokens.
-        └── ERC721Client.php  # The ERC721Client class, used to interact with ERC721 tokens.
+        ├── ERC721Client.php  # The ERC721Client class, used to interact with ERC721 tokens.
+        ├── ERC1155Client.php # The ERC1155Client class, used to interact with ERC1155 tokens.
+        └── POAPClient.php    # The POAPClient class, used to interact with POAP tokens.
 ```
 
 ## Installation
@@ -115,8 +120,6 @@ echo "Mint hash: {$transactionHash}";
 
 # Pending features
 
-- ERC1155 Client
-- POAP Client
 - Web3 Core Client
 - IPFS Client
 - Custodied Wallets Client
