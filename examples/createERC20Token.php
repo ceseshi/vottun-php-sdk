@@ -25,16 +25,32 @@ $erc20Token = new ERC20Client($vottunClient, $network, null);
 
 # Deploy a new ERC20 token
 $initialSupply = \Web3\Utils::toWei("1000000", 'ether');
-$response = $erc20Token->deploy('TestToken', 'TST', 'TestToken', $initialSupply);
-echo "Deploy response: {$response}\n";
+try {
+	$response = $erc20Token->deploy('TestToken', 'TST', 'TestToken', $initialSupply);
+	echo "Deploy OK, txHash: {$response}\n";
+} catch (\Exception $e) {
+	exit("Error deploying ERC20 token: {$e->getMessage()}\n");
+}
 
-if ($erc20Token->getContractAddress()) {
-	# Transfer some tokens to the destination address
-	$amount = \Web3\Utils::toWei("100", 'ether');
+$address = $erc20Token->getContractAddress();
+
+if (!$address) {
+	exit("Error getting contract address\n");
+}
+
+# Transfer some tokens to the destination address
+$amount = \Web3\Utils::toWei("100", 'ether');
+try {
 	$response = $erc20Token->transfer($destAddress, $amount);
-	echo "Transfer response {$response}:\n";
+	echo "Transfer OK, txHash: {$response}\n";
+} catch (\Exception $e) {
+	exit("Error transferring tokens: {$e->getMessage()}\n");
+}
 
-	# Get the balance of the destination address
+# Get the balance of the destination address
+try {
 	$response = $erc20Token->balanceOf($destAddress);
-	echo "Balance of $destAddress: {$response}\n";
+	echo "Balance of {$destAddress}: {$response}\n";
+} catch (\Exception $e) {
+	exit("Error getting balance: {$e->getMessage()}\n");
 }

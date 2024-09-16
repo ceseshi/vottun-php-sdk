@@ -25,21 +25,44 @@ $otherAddress = ''; // Destination address
 $vottunClient = new VottunClient($vottunApiKey, $vottunApplicationVkn);
 $erc20Token = new ERC20Client($vottunClient, $network, $contractAddress);
 
-/*# Transfer some tokens to the destination address
-$amount = $vottunClient->etherToWei("100");
-$response = $erc20Token->transfer($otherAddress, $amount);
-echo "Transfer response:\n";
-print_r($response);*/
+# Get total supply
+try {
+	$response = $erc20Token->totalSupply();
+	echo "Total supply: {$response}\n";
+} catch (\Exception $e) {
+	exit("Error getting total supply: {$e->getMessage()}\n");
+}
+
+# Transfer some tokens to the destination address
+$amount = 10; // 10 wei
+try {
+	$response = $erc20Token->transfer($otherAddress, $amount);
+	echo "Transfer OK, txHash: {$response}\n";
+} catch (\Exception $e) {
+	exit("Error transferring: {$e->getMessage()}\n");
+}
 
 # Increase the allowance of the destination address
-$amount = strval(\Web3\Utils::toWei("100.001", 'ether'));
-$response = $erc20Token->increaseAllowance($otherAddress, $amount);
-echo "increaseAllowance response: {$response}\n";
+$amount = strval(\Web3\Utils::toWei("1", 'ether'));
+try {
+	$response = $erc20Token->increaseAllowance($otherAddress, $amount);
+	echo "increaseAllowance OK, txHash: {$response}\n";
+} catch (\Exception $e) {
+	exit("Error increasing allowance: {$e->getMessage()}\n");
+}
 
 # Get the allowance of the destination address
-$response = $erc20Token->allowance($ownerAddress, $otherAddress);
-echo "Allowance of {$otherAddress}: {$response}\n";
+try {
+	$response = $erc20Token->allowance($ownerAddress, $otherAddress);
+	echo "Allowance of {$otherAddress}: {$response}\n";
+} catch (\Exception $e) {
+	exit("Error getting allowance: {$e->getMessage()}\n");
+}
 
 # Get the balance of the destination address
-$response = $erc20Token->balanceOf($otherAddress);
-echo "Balance of {$otherAddress}: {$response}\n";
+try {
+	$response = $erc20Token->balanceOf($otherAddress);
+	echo "Balance of {$otherAddress}: {$response}\n";
+} catch (\Exception $e) {
+	exit("Error getting balance: {$e->getMessage()}\n");
+}
